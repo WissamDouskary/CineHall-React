@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Session } from "./FilmDetails";
 
 interface FilmModalProps {
@@ -6,6 +7,16 @@ interface FilmModalProps {
 }
 
 function FilmModal({ session, closeModal }: FilmModalProps) {
+
+    const [isCouple, setIsCouple] = useState(false);
+
+    const showsection = (seatType) => {
+        if (seatType === "couple") {
+            setIsCouple(true);
+        } else {
+            setIsCouple(false);
+        }
+    }
 
     return (
         <>
@@ -29,18 +40,18 @@ function FilmModal({ session, closeModal }: FilmModalProps) {
                         <input type="hidden" name="session_id" value={session.id} />
 
                         <label htmlFor="seat-type" className="block mb-2 text-sm font-medium">Seat Type:</label>
-                        <select id="seat-type" name="type" className="w-full border px-3 py-2 rounded-md mb-4" required>
+                        <select id="seat-type" onChange={(e) => showsection(e.target.value)} name="type" className="w-full border px-3 py-2 rounded-md mb-4" required>
                             <option value="solo">Solo</option>
                             <option value="couple">Couple</option>
                         </select>
 
-                        <div id="solo-seat-group" className="mb-4">
+                        {!isCouple && (<div id="solo-seat-group" className="mb-4">
                             <label htmlFor="seat" className="block mb-2 text-sm font-medium">Seat Number:</label>
                             <input type="number" id="seat" name="seat" min="1"
                                 className="w-full border px-3 py-2 rounded-md" required></input>
-                        </div>
+                        </div>)}
 
-                        <div id="couple-seat-group" className="mb-4 hidden">
+                        {isCouple && (<div id="couple-seat-group" className="mb-4">
                             <label className="block mb-2 text-sm font-medium">Seat Numbers (Couple):</label>
                             <div className="flex space-x-2">
                                 <input type="number" id="seat1" name="seat1" min="1"
@@ -48,7 +59,8 @@ function FilmModal({ session, closeModal }: FilmModalProps) {
                                 <input type="number" id="seat2" name="seat2" min="1"
                                     className="w-1/2 border px-3 py-2 rounded-md"></input>
                             </div>
-                        </div>
+                        </div>)}
+
 
                         <button type="submit" className="w-full bg-rose-600 text-white py-2 rounded-md hover:bg-rose-700">
                             Confirm Booking
