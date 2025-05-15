@@ -8,7 +8,8 @@ interface Film {
   description: string;
   duration: number;
   minimum_age: number;
-image?: string;
+  image?: string;
+  trailer_url?: string;
 }
 
 export function useFilms() {

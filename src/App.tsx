@@ -4,7 +4,7 @@ function App() {
   return (
     <>
     <h1 className="text-3xl font-bold">
-      Welcome {user.name},
+      Welcome {user?.name || 'Visitor'},
     </h1>
     </>
   )

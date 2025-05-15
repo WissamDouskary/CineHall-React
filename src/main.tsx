@@ -8,6 +8,7 @@ import Layout from './components/Layout.jsx'
 import NotFound from './components/NotFound.tsx';
 import Login from './components/Login.tsx';
 import Films from './components/Films/Films.tsx';
+import FilmDetails from './components/Films/FilmDetails.tsx';
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
       { path: "register", element: <Register /> },
       { path: "login", element: <Login /> },
       { path: "films", element: <Films /> },
+      { path: "film/:id", element: <FilmDetails /> },
       {path: "*", element: <NotFound />}
     ],
   },
