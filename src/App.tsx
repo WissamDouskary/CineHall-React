@@ -1,10 +1,10 @@
 
 function App() {
-
+  const user = JSON.parse(localStorage.getItem('user'));
   return (
     <>
     <h1 className="text-3xl font-bold">
-      Hello From APP!
+      Welcome {user.name},
     </h1>
     </>
   )

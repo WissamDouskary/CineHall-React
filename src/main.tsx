@@ -7,7 +7,7 @@ import Register from './components/Register.tsx'
 import Layout from './components/Layout.jsx'
 import NotFound from './components/NotFound.tsx';
 import Login from './components/Login.tsx';
-import Films from './components/Films.tsx';
+import Films from './components/Films/Films.tsx';
 
 const router = createBrowserRouter([
   {

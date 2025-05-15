@@ -39,6 +39,7 @@ function Regiter() {
             if (res.ok) {
                 console.log('regestration complete!', data);
                 localStorage.setItem('token', data.token)
+                localStorage.setItem('user', JSON.stringify(data.user))
                 setIsRegistered(true);
                 setTimeout(() => {
                     navigate('/')
