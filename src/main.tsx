@@ -7,6 +7,7 @@ import Register from './components/Register.tsx'
 import Layout from './components/Layout.jsx'
 import NotFound from './components/NotFound.tsx';
 import Login from './components/Login.tsx';
+import Films from './components/Films.tsx';
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,7 @@ const router = createBrowserRouter([
       { index: true, element: <App /> },
       { path: "register", element: <Register /> },
       { path: "login", element: <Login /> },
+      { path: "films", element: <Films /> },
       {path: "*", element: <NotFound />}
     ],
   },
