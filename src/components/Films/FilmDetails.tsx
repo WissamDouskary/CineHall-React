@@ -1,9 +1,26 @@
 import { useParams } from "react-router-dom";
 import { useFilms } from "./filmsData";
+import { useState } from "react";
+import FilmModal from "./FilmModal";
+
+export interface Session {
+    id: number;
+    type: string;
+    language: string;
+    start_date: Date;
+    end_date: Date;
+}
 
 function FilmDetails() {
     const { films, isLoading } = useFilms();
     const { id } = useParams<{ id: string }>();
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedSession, setSelectedSession] = useState<Session | null>(null);
+
+    const openBookingModal = (session: Session) => {
+        setSelectedSession(session);
+        setModalOpen(true);
+    };
 
     if (!id) {
         return (
@@ -88,6 +105,13 @@ function FilmDetails() {
         }
     }
 
+    console.log(film.session);
+
+    function formatDate(dateString: Date) {
+        const date = new Date(dateString);
+        return date.toLocaleString();
+    }
+
     const embedLink = film.trailer_url ? convertYouTubeToEmbed(film.trailer_url) : null;
 
     return (
@@ -135,7 +159,7 @@ function FilmDetails() {
                             </div>
 
                             <div className="mb-6">
-                                <h2 className="text-xl font-semibold text-gray-900 mb-2">Synopsis</h2>
+                                <h2 className="text-xl font-semibold text-gray-900 mb-2">Description</h2>
                                 <p id="film-description" className="text-gray-700 leading-relaxed">
                                     {film.description}
                                 </p>
@@ -168,11 +192,12 @@ function FilmDetails() {
                             className="w-full rounded-lg bg-black h-0 pb-[56.25%] relative"
                         >
                             <iframe
-                                width="1425"
-                                height="800"
+                                width="1380"
+                                height="780"
                                 src={embedLink ?? undefined}
                                 title="YouTube video player"
                                 frameBorder="0"
+                                className="rounded-xl"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                 referrerPolicy="strict-origin-when-cross-origin"
                                 allowFullScreen
@@ -185,49 +210,39 @@ function FilmDetails() {
                 <div id="showtimes" className="bg-white rounded-xl shadow-md p-6 md:p-8 mb-8">
                     <h2 className="text-2xl font-semibold text-gray-900 mb-6">Sessions</h2>
                     <div id="session-container" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <p className="text-gray-500">Loading...</p>
+                        {film.session && film.session.length > 0 ? (
+                            (film.session as Session[]).map(item => (
+                                <div key={item.id} className="border rounded-lg p-4">
+                                    <h3 className="font-semibold text-gray-900 mb-3">{item.type} - {item.language}</h3>
+                                    <div className="text-gray-700 text-sm mb-1"><strong>Start:</strong> {formatDate(item.start_date)}</div>
+                                    <div className="text-gray-700 text-sm mb-3"><strong>End:</strong> {formatDate(item.end_date)}</div>
+                                    <a
+                                        href="#"
+                                        className="book-session-btn inline-block px-4 py-2 bg-rose-600 text-white rounded hover:bg-rose-700 text-sm"
+                                        data-session-id={item.id}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            openBookingModal(item);
+                                        }}
+                                    >
+                                        Book This Session
+                                    </a>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-red-500">There are no sessions available for this film!</p>
+                        )}
                     </div>
                 </div>
             </main>
 
-            {/* Booking Modal */}
-            <div id="booking-modal" className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-                <div className="bg-white rounded-lg shadow-md p-6 w-96 relative">
-                    <button
-                        onClick={() => { }} // Remplace avec ta fonction JS
-                        className="absolute top-2 right-2 text-gray-600 hover:text-black text-lg"
-                    >
-                        ×
-                    </button>
-                    <h3 className="text-lg font-semibold mb-4">Book Session</h3>
-                    <form id="booking-form">
-                        <input type="hidden" name="session_id" id="booking-session-id" />
-
-                        <label htmlFor="seat-type" className="block mb-2 text-sm font-medium">Seat Type:</label>
-                        <select id="seat-type" name="type" className="w-full border px-3 py-2 rounded-md mb-4" required>
-                            <option value="solo">Solo</option>
-                            <option value="couple">Couple</option>
-                        </select>
-
-                        <div id="solo-seat-group" className="mb-4">
-                            <label htmlFor="seat" className="block mb-2 text-sm font-medium">Seat Number:</label>
-                            <input type="number" id="seat" name="seat" min="1" className="w-full border px-3 py-2 rounded-md" required />
-                        </div>
-
-                        <div id="couple-seat-group" className="mb-4 hidden">
-                            <label className="block mb-2 text-sm font-medium">Seat Numbers (Couple):</label>
-                            <div className="flex space-x-2">
-                                <input type="number" id="seat1" name="seat1" min="1" className="w-1/2 border px-3 py-2 rounded-md" />
-                                <input type="number" id="seat2" name="seat2" min="1" className="w-1/2 border px-3 py-2 rounded-md" />
-                            </div>
-                        </div>
-
-                        <button type="submit" className="w-full bg-rose-600 text-white py-2 rounded-md hover:bg-rose-700">
-                            Confirm Booking
-                        </button>
-                    </form>
-                </div>
-            </div>
+            {/* Modal */}
+            {modalOpen && selectedSession && (
+                <FilmModal
+                    session={selectedSession}
+                    closeModal={() => setModalOpen(false)}
+                />
+            )}
 
         </>
     );

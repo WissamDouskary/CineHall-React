@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import type { Session } from "./FilmDetails";
 
 interface Film {
   id: number;
@@ -10,6 +11,7 @@ interface Film {
   minimum_age: number;
   image?: string;
   trailer_url?: string;
+  session?: Session[];
 }
 
 export function useFilms() {
