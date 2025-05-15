@@ -1,76 +1,48 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FilmCard from "./FilmsCard";
+import { useFilms } from "./filmsData";
 
 interface Film {
-  id: number;
-  title: string;
-  genre: string;
-  duration: number;
-  minimum_age: number;
+    id: number;
+    title: string;
+    genre: string;
+    duration: number;
+    minimum_age: number;
 }
 
 function Films() {
 
-    const [films, setFilms] = useState<Film[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [isError, setIsError] = useState("");
+    const { films, isLoading, isError } = useFilms();
     const [genreFilter, setGenreFilter] = useState("");
     const [filteredFilms, setFilteredFilms] = useState<Film[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-
-        const token = localStorage.getItem('token');
-        if (!token) {
-            navigate('/login');
-            return;
-        }
-        setIsLoading(true)
-        const fetchfilms = async () => {
-            try {
-                const res = await fetch("http://127.0.0.1:8000/api/film", {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-
-                const data = await res.json();
-
-                if (!res.ok) {
-                    setIsError(data.message)
-                }
-
-                setFilms(data);
-                setFilteredFilms(data);
-            } catch (error) {
-                console.error('Error :' + (error as Error).message)
-                setIsError('there is an error, try to logout and login again');
-            } finally {
-                setIsLoading(false)
-            }
-        }
-        fetchfilms()
-    }, [navigate])
+    if(!localStorage.getItem('token')){
+        navigate("/login");
+    }
 
     useEffect(() => {
-        let filtred = films;
+        setFilteredFilms(films);
+    }, [films]);
+
+    useEffect(() => {
+        let filtered = films;
 
         if (genreFilter) {
-            filtred = filtred.filter(film => film.genre == genreFilter);
+            filtered = filtered.filter(film => film.genre === genreFilter);
         }
 
         if (searchTerm) {
-            filtred = filtred.filter(film =>
+            filtered = filtered.filter(film =>
                 film.title.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
-        setFilteredFilms(filtred);
-    }, [searchTerm, genreFilter, films])
+
+        setFilteredFilms(filtered);
+    }, [searchTerm, genreFilter, films]);
 
     if (isLoading)
         return (

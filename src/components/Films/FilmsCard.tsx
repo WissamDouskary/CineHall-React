@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 interface Film {
   id: number;
   title: string;
@@ -36,9 +38,9 @@ function FilmCard({ film } : FilmCardProps ) {
       <div className="p-4">
         <h2 className="text-xl font-semibold mb-2 line-clamp-1">{film.title}</h2>
         <p className="text-gray-600 text-sm mb-3">Duration: {formatDuration(film.duration)}</p>
-        <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md font-medium transition-colors duration-300">
+        <Link to={`/film/${film.id}`} className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-10 mt-2 rounded-md font-medium transition-colors duration-300">
           See Details
-        </button>
+        </Link>
       </div>
     </div>
   )
