@@ -19,7 +19,6 @@ function Regiter() {
         setForm({ ...formData, [e.target.name]: e.target.value });
     };
 
-
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 

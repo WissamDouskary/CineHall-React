@@ -105,8 +105,6 @@ function FilmDetails() {
         }
     }
 
-    console.log(film.session);
-
     function formatDate(dateString: Date) {
         const date = new Date(dateString);
         return date.toLocaleString();
